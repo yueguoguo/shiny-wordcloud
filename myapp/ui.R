@@ -1,23 +1,27 @@
+library(shiny)
+
 fluidPage(
+  
   # Application title
-  titlePanel("Word Cloud"),
+  
+  titlePanel("Solar power prediction"),
   
   sidebarLayout(
+    
     # Sidebar with a slider and selection inputs
+    
     sidebarPanel(
-      selectInput("selection", "Choose a book:",
-                  choices = books),
-      actionButton("update", "Change"),
-      hr(),
-      sliderInput("freq",
-                  "Minimum Frequency:",
-                  min = 1,  max = 50, value = 15),
-      sliderInput("max",
-                  "Maximum Number of Words:",
-                  min = 1,  max = 300,  value = 100)
+      dateRangeInput(
+        'date_range',
+        label='Date range input: yyyy-mm-dd',
+        start=as.Date("2013-12-10"), 
+        end=as.Date("2016-11-23")
+      )
+      
     ),
     
     # Show Word Cloud
+    
     mainPanel(
       plotOutput("plot")
     )

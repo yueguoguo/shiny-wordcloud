@@ -21,6 +21,10 @@ RUN wget --no-verbose https://s3.amazonaws.com/rstudio-shiny-server-os-build/ubu
 
 RUN R -e "install.packages(c('shiny', 'rmarkdown', 'tm', 'wordcloud', 'memoise'), repos='http://cran.rstudio.com/')"
 
+# Install keras R interfacen and its dependencies.
+
+RUN R -e 'library(devtools);devtools::install_github("rstudio/reticulate");devtools::install_github("gaborcsardi/debugme");source("https://install-github.me/MangoTheCat/processx");devtools::install_github("rstudio/keras")'
+
 COPY shiny-server.conf  /etc/shiny-server/shiny-server.conf
 COPY /myapp /srv/shiny-server/
 

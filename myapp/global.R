@@ -1,33 +1,21 @@
-library(tm)
-library(wordcloud)
-library(memoise)
+library(keras)
 
-# The list of valid books
-books <<- list("A Mid Summer Night's Dream" = "summer",
-               "The Merchant of Venice" = "merchant",
-               "Romeo and Juliet" = "romeo")
+# Use keras model for prediction.
 
-# Using "memoise" to automatically cache the results
-getTermMatrix <- memoise(function(book) {
-  # Careful not to let just any name slip in here; a
-  # malicious user could manipulate this value.
-  if (!(book %in% books))
-    stop("Unknown book")
+predictSolarPower <- function(x, model) {
+  y <- keras::predict(x, model)
   
-  text <- readLines(sprintf("./%s.txt", book),
-                    encoding="UTF-8")
-  
-  myCorpus = Corpus(VectorSource(text))
-  myCorpus = tm_map(myCorpus, content_transformer(tolower))
-  myCorpus = tm_map(myCorpus, removePunctuation)
-  myCorpus = tm_map(myCorpus, removeNumbers)
-  myCorpus = tm_map(myCorpus, removeWords,
-                    c(stopwords("SMART"), "thy", "thou", "thee", "the", "and", "but"))
-  
-  myDTM = TermDocumentMatrix(myCorpus,
-                             control = list(minWordLength = 1))
-  
-  m = as.matrix(myDTM)
-  
-  sort(rowSums(m), decreasing = TRUE)
-})
+  y
+}
+
+# load test data.
+
+loadData <- function() {
+  load("./results_lstm.RData")
+}
+
+# reconcile the data.
+
+denomalizeData <- function(data, max, min) {
+  data * (max - min) + min
+}
